@@ -29,9 +29,8 @@ def extract(filename):
 
     article.download()
     article.parse()
-    return 1, 2
-
-    # return ArticleMetadata(article, NEWS_DIRECTORY + filename), article.text
+    
+    return ArticleMetadata(article, NEWS_DIRECTORY + filename), article.text
 
 def writeContent(filename, content):
     with open(filename + '.txt', 'w') as fp:
@@ -46,17 +45,13 @@ articles = []
 with open(NEWS_DIRECTORY[:-1] + '.json') as fp:
    articles = json.loads(fp.read())['records']
 
-## Get all filename for the news directory
-# fn = ['{}.html'.format(article['_id']) for article in articles]
-
+## Iterate over each, one at a time, and parse
 for article in articles[:5]:
     filename = '{}.html'.format(article['_id'])
 
-    print(filename)
-
     try:
         metadata, content = extract(filename)
-        # writeContent(NEWS_DIRECTORY + filename, content)
-        # writeRecord(metadata)
+        writeContent(NEWS_DIRECTORY + filename, content)
+        writeRecord(metadata)
     except:
         print('Difficulty parsing article ' + article['_id'])

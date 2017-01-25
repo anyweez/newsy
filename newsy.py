@@ -21,7 +21,7 @@ class ArticleMetadata(object):
         
         self.published = article.publish_date.isoformat() if article.publish_date else None
         self.added = datetime.datetime.now().isoformat()
-
+        self.filename = source['_id']
 
 ## Read, parse, and extract information from the specified HTML file.
 def extract(filename, source):

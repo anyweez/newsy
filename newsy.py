@@ -47,7 +47,7 @@ with open(NEWS_DIRECTORY[:-1] + '.json') as fp:
 
 ## Iterate over each, one at a time, and parse. Create metadata records for
 ## each story.
-for article in articles:
+for i, article in enumerate(articles):
     filename = '{}.html'.format(article['_id'])
 
     try:
@@ -57,3 +57,5 @@ for article in articles:
     except Exception as e:
         print('Difficulty parsing article ' + article['_id'])
         print(e)
+    
+    sys.stdout.write('{} / {}\r'.format(i + 1, len(articles)))

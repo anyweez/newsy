@@ -1,6 +1,8 @@
-import rethinkdb, sys, nltk
+import rethinkdb, sys, nltk, os
 import static.countries as static
 # from nltk.text import TextCollection
+
+NEWS_FILE_PATH = os.environ['HOME'] + '/git/scraper/news/{}.html.txt'
 
 # Returns a generator
 def next_record():
@@ -9,17 +11,18 @@ def next_record():
 
     for doc in cursor:
         try:
-            path = doc['filepath'].replace('/home', '/Users') + '.txt'
-            with open(path) as fp:
+#            path = doc['filepath'].replace('/home', '/Users') + '.txt'
+            with open(NEWS_FILE_PATH.format(doc['filename'])) as fp:
                 yield doc, fp.read()
         except:
+            print(NEWS_FILE_PATH.format(doc['filename']))
             pass
 
 def update_record():
     md = rethinkdb.connect('historian', 28015)
 
     def add(record):
-        print(rethinkdb.db('news').table('metadata').insert(record, conflict="update").run(md))
+        rethinkdb.db('news').table('metadata').insert(record, conflict="update").run(md)
 
     return add
 
@@ -40,14 +43,11 @@ for doc, text in next_record():
     countries = static.find_countries(tokens)
 
     if len(countries) > 0:
-        # print(doc['title'])
-        # print(countries)
+        add_labels(doc, 'countries', countries)
+        update(doc)
+
         found += 1
 
     attempts += 1
-
-    add_labels(doc, 'countries', countries)
-    # if attempts > 40:
-    #     sys.exit(0)
 
 print(found / attempts)

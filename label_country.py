@@ -27,10 +27,7 @@ def update_record():
 def add_labels(record, label, values):
     if 'labels' not in record:
         record['labels'] = {}
-    record['labels'][label] = list(map(lambda x: { 'value': x, 'feedback': None }, values))
-
-    print(record['labels'][label])
-
+    record['labels'][label] = values
 
 gen = next_record()
 update = update_record()

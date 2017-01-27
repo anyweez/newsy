@@ -1,6 +1,5 @@
 import rethinkdb, sys, nltk, os
 import static.countries as static
-# from nltk.text import TextCollection
 
 NEWS_FILE_PATH = os.environ['HOME'] + '/git/scraper/news/{}.html.txt'
 
@@ -11,11 +10,10 @@ def next_record():
 
     for doc in cursor:
         try:
-#            path = doc['filepath'].replace('/home', '/Users') + '.txt'
             with open(NEWS_FILE_PATH.format(doc['filename'])) as fp:
                 yield doc, fp.read()
         except:
-            print(NEWS_FILE_PATH.format(doc['filename']))
+            # print(NEWS_FILE_PATH.format(doc['filename']))
             pass
 
 def update_record():
@@ -29,7 +27,9 @@ def update_record():
 def add_labels(record, label, values):
     if 'labels' not in record:
         record['labels'] = {}
-    record['labels'][label] = values
+    record['labels'][label] = list(map(lambda x: { 'value': x, 'feedback': None }, values))
+
+    print(record['labels'][label])
 
 
 gen = next_record()
@@ -44,10 +44,10 @@ for doc, text in next_record():
 
     if len(countries) > 0:
         add_labels(doc, 'countries', countries)
-        update(doc)
+        # update(doc)
 
         found += 1
 
     attempts += 1
 
-print(found / attempts)
+print('Coverage: {}'.format(found / attempts))

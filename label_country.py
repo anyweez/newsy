@@ -41,7 +41,7 @@ for doc, text in next_record():
 
     if len(countries) > 0:
         add_labels(doc, 'countries', countries)
-        # update(doc)
+        update(doc)
 
         found += 1
 

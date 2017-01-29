@@ -1,12 +1,11 @@
-import os, sys, json, datetime, hashlib, lxml
+import os, sys, json, datetime, hashlib, lxml, multiprocessing, math
 import newspaper, rethinkdb
 
 NEWS_DIRECTORY = sys.argv[1] + '/'
 DOWNLOAD_URL_ROOT = 'http://localhost:3000/'
+NUM_PROCESSES=4
 
 ## Connect to RethinkDB, where article metadata will be stored
-md = rethinkdb.connect('historian', 28015)
-# rethinkdb
 
 class ArticleMetadata(object):
     def __init__(self, article, source):
@@ -28,34 +27,69 @@ def extract(filename, source):
     article = newspaper.Article(DOWNLOAD_URL_ROOT + filename)
 
     article.download()
-    article.parse()
-    
+    try:
+        article.parse()
+    except:
+        pass
+
     return ArticleMetadata(article, source), article.text
 
 def writeContent(filename, content):
     with open(filename + '.txt', 'w') as fp:
         fp.write(content)
 
-def writeRecord(metadata):
-    return rethinkdb.db('news').table('metadata').insert(metadata.__dict__, conflict="update").run(md)
+def writeRecord(db, metadata):
+    return rethinkdb.db('news').table('metadata').insert(metadata.__dict__, conflict="update").run(db)
+
+def handle_article(article_list):
+    md = rethinkdb.connect('historian', 28015)
+
+    for article in article_list:
+        filename = '{}.html'.format(article['_id'])
+
+        try:
+            metadata, content = extract(filename, article)
+            writeContent(NEWS_DIRECTORY + filename, content)
+            writeRecord(md, metadata)
+        except Exception as e:
+            print('Difficulty parsing article ' + article['_id'])
+            # print(e)
+        
 
 ## Load target files from news.json 
 articles = []
 
+print('Reading news stories...')
 with open(NEWS_DIRECTORY[:-1] + '.json') as fp:
    articles = json.loads(fp.read())['records']
 
 ## Iterate over each, one at a time, and parse. Create metadata records for
 ## each story.
-for i, article in enumerate(articles):
-    filename = '{}.html'.format(article['_id'])
+segment_length = math.ceil(len(articles) / NUM_PROCESSES)
+jobs = []
 
-    try:
-        metadata, content = extract(filename, article)
-        writeContent(NEWS_DIRECTORY + filename, content)
-        writeRecord(metadata)
-    except Exception as e:
-        print('Difficulty parsing article ' + article['_id'])
-        print(e)
+print('Launching child processes...')
+for i in range(0, NUM_PROCESSES):
+    start = segment_length * i
+    end = segment_length * (i + 1)
+
+    p = multiprocessing.Process(target=handle_article, args=(articles[start:end],))
+    jobs.append(p)
+    p.start()
+
+print('Processing news stories...')
+for job in jobs:
+    job.join()
+
+# for i, article in enumerate(articles):
+#     filename = '{}.html'.format(article['_id'])
+
+#     try:
+#         metadata, content = extract(filename, article)
+#         writeContent(NEWS_DIRECTORY + filename, content)
+#         writeRecord(metadata)
+#     except Exception as e:
+#         print('Difficulty parsing article ' + article['_id'])
+#         print(e)
     
-    sys.stdout.write('{} / {}\r'.format(i + 1, len(articles)))
+#     sys.stdout.write('{} / {}\r'.format(i + 1, len(articles)))

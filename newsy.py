@@ -1,4 +1,4 @@
-import os, sys, json, datetime, hashlib, lxml, multiprocessing, math
+import os, sys, json, datetime, hashlib, multiprocessing, math
 import newspaper, rethinkdb
 
 NEWS_DIRECTORY = sys.argv[1] + '/'
@@ -26,13 +26,14 @@ class ArticleMetadata(object):
 def extract(filename, source):
     article = newspaper.Article(DOWNLOAD_URL_ROOT + filename)
 
-    article.download()
     try:
+        article.download()
         article.parse()
-    except:
-        pass
 
-    return ArticleMetadata(article, source), article.text
+        return ArticleMetadata(article, source), article.text
+    except:
+        print('Parse error for article {}'.format(filename))
+        return
 
 def writeContent(filename, content):
     with open(filename + '.txt', 'w') as fp:
@@ -52,8 +53,7 @@ def handle_article(article_list):
             writeContent(NEWS_DIRECTORY + filename, content)
             writeRecord(md, metadata)
         except Exception as e:
-            print('Difficulty parsing article ' + article['_id'])
-            # print(e)
+            print('Difficulty parsing article {}'.format(article['_id']))
         
 
 ## Load target files from news.json 
@@ -80,16 +80,3 @@ for i in range(0, NUM_PROCESSES):
 print('Processing news stories...')
 for job in jobs:
     job.join()
-
-# for i, article in enumerate(articles):
-#     filename = '{}.html'.format(article['_id'])
-
-#     try:
-#         metadata, content = extract(filename, article)
-#         writeContent(NEWS_DIRECTORY + filename, content)
-#         writeRecord(metadata)
-#     except Exception as e:
-#         print('Difficulty parsing article ' + article['_id'])
-#         print(e)
-    
-#     sys.stdout.write('{} / {}\r'.format(i + 1, len(articles)))

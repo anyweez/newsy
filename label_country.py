@@ -5,7 +5,7 @@ import shared.config
 
 config = shared.config.load('newsy.ini')
 
-NEWS_FILE_PATH = config['Disk']['NewsPath']
+NEWS_FILE_PATH = config['Disk']['NewsPath'] + config['Disk']['ExtractPattern']
 DB_HOST = config['Database']['Host']
 DB_PORT = int(config['Database']['Port'])
 DB_DB = config['Database']['Db']

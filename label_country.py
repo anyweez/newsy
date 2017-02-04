@@ -1,26 +1,34 @@
 import rethinkdb, sys, nltk, os
 import static.countries as static
+import shared.config
+# import shared.labels as labels
 
-NEWS_FILE_PATH = os.environ['HOME'] + '/git/scraper/news/{}.html.txt'
+config = shared.config.load('newsy.ini')
+
+NEWS_FILE_PATH = config['Disk']['NewsPath']
+DB_HOST = config['Database']['Host']
+DB_PORT = int(config['Database']['Port'])
+DB_DB = config['Database']['Db']
+DB_TABLE_NEWS = config['Database']['NewsTable']
 
 # Returns a generator
 def next_record():
-    md = rethinkdb.connect('historian', 28015)
-    cursor = rethinkdb.db('news').table('metadata').run(md)
+    md = rethinkdb.connect(DB_HOST, DB_PORT)
+    cursor = rethinkdb.db(DB_DB).table(DB_TABLE_NEWS).run(md)
 
     for doc in cursor:
         try:
             with open(NEWS_FILE_PATH.format(doc['filename'])) as fp:
                 yield doc, fp.read()
         except:
-            # print(NEWS_FILE_PATH.format(doc['filename']))
+            print('File not found: {}'.format(NEWS_FILE_PATH.format(doc['filename'])))
             pass
 
 def update_record():
-    md = rethinkdb.connect('historian', 28015)
+    md = rethinkdb.connect(DB_HOST, DB_PORT)
 
     def add(record):
-        rethinkdb.db('news').table('metadata').insert(record, conflict="update").run(md)
+        rethinkdb.db(DB_DB).table(DB_TABLE_NEWS).insert(record, conflict="update").run(md)
 
     return add
 

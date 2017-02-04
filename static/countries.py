@@ -16,76 +16,76 @@ countries = {
     'Azerbaijan': { 'Azerbaijani' },
     
     'The Bahamas': { 'Bahamian' },
-    'Bahrain': { },
+    'Bahrain': set(),
     'Bangladesh': { 'Bangladeshi' },
-    'Barbados': { },
-    'Belarus': { },
+    'Barbados': set(),
+    'Belarus': set(),
     'Belgium': { 'Belgian' },
-    'Belize': { },
-    'Benin': { },
+    'Belize': set(),
+    'Benin': set(),
     'Bhutan': { 'Bhutani' },
     'Bolivia': { 'Bolivian' },
     'Bosnia and Herzegovina': { 'Bosnia', 'Herzegovina' },
     'Botswana': { 'Botswanan' },
     'Brazil': { 'Brazilian' },
-    'Brunei': { },
+    'Brunei': set(),
     'Bulgaria': { 'Bulgarian' },
-    'Burkina Faso': { },
-    'Burma': { },
-    'Burundi': { },
+    'Burkina Faso': set(),
+    'Burma': set(),
+    'Burundi': set(),
 
     'Cambodia': { 'Cambodian' },
     'Cameroon': { 'bbb' },
     'Canada': { 'Canadian' },
-    'Cabo Verde': { },
-    'Central African Republic': { },
-    'Chad': { },
+    'Cabo Verde': set(),
+    'Central African Republic': set(),
+    'Chad': set(),
     'Chile': { 'Chileans' },
     'China': { 'Chinese' },
     'Colombia': { 'Colombians' },
-    'Comoros': { },
+    'Comoros': set(),
     'Democratic Republic of the Congo': { 'Congo' },
     'Costa Rica': { 'Costa Rican' },
     'Cote d\'Ivoire': { 'Ivory Coast' },
     'Croatia': { 'Croatian' },
     'Cuba': { 'Cuban' },
-    'Curacao': { },
-    'Cyprus': { },
-    'Czechia': { },
+    'Curacao': set(),
+    'Cyprus': set(),
+    'Czechia': set(),
 
     'Denmark': { 'Danish' },
-    'Djibouti': { },
-    'Dominica': { },
-    'Dominican Republic': { },
+    'Djibouti': set(),
+    'Dominica': set(),
+    'Dominican Republic': set(),
 
     'East Timor': { 'Timor-Leste' },
     'Ecuador': { 'Ecuadorians' },
     'Egypt': { 'Egyptians' },
-    'El Salvador': { },
+    'El Salvador': set(),
     'Equatorial Guinea': { 'Guinea' },
-    'Eritrea': { },
-    'Estonia': { },
-    'Ethiopia': { },
+    'Eritrea': set(),
+    'Estonia': set(),
+    'Ethiopia': set(),
 
     'Fiji': { 'Fijian' },
-    'Finland': { },
+    'Finland': set(),
     'France': { 'French' },
 
-    'Gabon': { },
-    'Gambia': { },
+    'Gabon': set(),
+    'Gambia': set(),
     'Georgia': { 'Georgian' },
     'Germany': { 'German' },
-    'Ghana': { },
+    'Ghana': set(),
     'Greece': { 'Greek' },
-    'Grenada': { },
+    'Grenada': set(),
     'Guatemala': { 'Guatemalan' },
-    'Guinea': { },
-    'Guyana': { },
+    'Guinea': set(),
+    'Guyana': set(),
 
     'Haiti': { 'Haitian' },
     'Holy See': { 'Vatican City', 'Vatican' },
     'Honduras': { 'Honduran' },
-    'Hong Kong': { },
+    'Hong Kong': set(),
     'Hungary': { 'Hungarian' },
 
     'Iceland': { 'Icelandic' },
@@ -101,22 +101,22 @@ countries = {
     'Jamaica': { 'Jamaican' },
     'Jordan': { 'Jordanian' },
 
-    'Kazakhstan': {  },
+    'Kazakhstan': set(),
     'Kenya': { 'Kenyan' },
-    'Kiribati': {  },
-    'Kosovo': {  },
-    'Kuwait': {  },
-    'Kyrgyzstan': {  },
+    'Kiribati': set(),
+    'Kosovo': set(),
+    'Kuwait': set(),
+    'Kyrgyzstan': set(),
     
     'Laos': { 'Laotian' },
     'Latvia': { 'Latvian' },
     'Lebanon': { 'Lebanese' },
-    'Lesotho': {  },
+    'Lesotho': set(),
     'Liberia': { 'Liberian' },
     'Libya': { 'Libyan' },
-    'Liechtenstein': {  },
+    'Liechtenstein': set(),
     'Lithuania': { 'Lithuanian' },
-    'Luxembourg': {  },
+    'Luxembourg': set(),
 
     'Macau': { 'bbb' },
     'Macedonia': { 'bbb' },
@@ -139,99 +139,98 @@ countries = {
     'Mozambique': { 'bbb' },
 
     'Namibia': { 'Namibian' },
-    'Nauru': {  },
+    'Nauru': set(),
     'Nepal': { 'Nepalese' },
     'Netherlands': { 'Dutch' },
-    'New Zealand': {  },
+    'New Zealand': set(),
     'Nicaragua': { 'Nicaraguan' },
-    'Niger': {  },
+    'Niger': set(),
     'Nigeria': { 'Nigerian' },
-    'North Korea': {  },
+    'North Korea': set(),
     'Norway': { 'Norwegian' },
 
-    'Oman': {  },
+    'Oman': set(),
 
-    'Pakistan': { 'Pakistani' }
-    'Palau': {  }
-    'Palestinian Territories': {  }
-    'Panama': { 'Panamanian' }
-    'Papau New Guinea': {  }
-    'Paraguay': {  }
-    'Peru': { 'Peruvian' }
-    'Philippines': {  }
-    'Poland': {  }
-    'Portugal': { 'Portuguese' }
+    'Pakistan': { 'Pakistani' },
+    'Palau': set(),
+    'Palestinian Territories': set(),
+    'Panama': { 'Panamanian' },
+    'Papau New Guinea': set(),
+    'Paraguay': set(),
+    'Peru': { 'Peruvian' },
+    'Philippines': set(),
+    'Poland': set(),
+    'Portugal': { 'Portuguese' },
 
-    'Qatar': {  }
+    'Qatar': set(),
 
-    'Romania': { 'Romanian' }
-    'Russia': { 'Russian' }
-    'Rwanda': {  }
+    'Romania': { 'Romanian' },
+    'Russia': { 'Russian' },
+    'Rwanda': set(),
 
 
-    'Saint Kitts and Nevis': { 'Saint Kitts' }
-    'Saint Lucia': {  }
-    'Saint Vincent and the Grenadines': { 'Saint Vincent' }
-    'Samoa': { 'Samoan' }
-    'San Marino': {  }
-    'Sao Tome and Principe': { 'Sao Tome' }
-    'Saudi Arabia': { 'Saudi Arabian' }
-    'Senegal': {  }
-    'Serbia': { 'Serbian' }
-    'Seychelles': {  }
-    'Sierra Leone': {  }
-    'Singapore': {  }
-    'Sint Maarten': {  }
-    'Slovakia': { 'Slovakian' }
-    'Slovenia': { 'Slovenia' }
-    'Solomon Islands': {  }
-    'Somalia': { 'Somalian' }
-    'South Africa': { 'South African' }
-    'South Korea': { 'South Korean' }
-    'South Sudan': { 'South Sudanese' }
-    'Spain': { 'Spanish' }
-    'Sri Lanka': { 'Sri Lankan' }
-    'Sudan': { 'Sudanese' }
-    'Suriname': {  }
-    'Swaziland': {  }
-    'Sweden': { 'Swedish' }
-    'Switzerland': { 'Swiss' }
-    'Syria': { 'Syrian' }
+    'Saint Kitts and Nevis': { 'Saint Kitts' },
+    'Saint Lucia': set(),
+    'Saint Vincent and the Grenadines': { 'Saint Vincent' },
+    'Samoa': { 'Samoan' },
+    'San Marino': set(),
+    'Sao Tome and Principe': { 'Sao Tome' },
+    'Saudi Arabia': { 'Saudi Arabian' },
+    'Senegal': set(),
+    'Serbia': { 'Serbian' },
+    'Seychelles': set(),
+    'Sierra Leone': set(),
+    'Singapore': set(),
+    'Sint Maarten': set(),
+    'Slovakia': { 'Slovakian' },
+    'Slovenia': { 'Slovenia' },
+    'Solomon Islands': set(),
+    'Somalia': { 'Somalian' },
+    'South Africa': { 'South African' },
+    'South Korea': { 'South Korean' },
+    'South Sudan': { 'South Sudanese' },
+    'Spain': { 'Spanish' },
+    'Sri Lanka': { 'Sri Lankan' },
+    'Sudan': { 'Sudanese' },
+    'Suriname': set(),
+    'Swaziland': set(),
+    'Sweden': { 'Swedish' },
+    'Switzerland': { 'Swiss' },
+    'Syria': { 'Syrian' },
 
-    'Taiwan': { 'bbb' }
-    'Tajikistan': { 'bbb' }
-    'Tanzania': { 'bbb' }
-    'Thailand': { 'bbb' }
-    'Timor-Leste': { 'bbb' }
-    'Togo': {  }
-    'Tonga': {  }
-    'Trinidad and Tobago': { 'Trinidad' }
-    'Tunisia': {  }
-    'Turkey': { 'Turkish' }
-    'Turkmenistan': {  }
-    'Tuvalu': {  }
+    'Taiwan': { 'bbb' },
+    'Tajikistan': { 'bbb' },
+    'Tanzania': { 'bbb' },
+    'Thailand': { 'bbb' },
+    'Timor-Leste': { 'bbb' },
+    'Togo': set(),
+    'Tonga': set(),
+    'Trinidad and Tobago': { 'Trinidad' },
+    'Tunisia': set(),
+    'Turkey': { 'Turkish' },
+    'Turkmenistan': set(),
+    'Tuvalu': set(),
     
     'Uganda': { 'Ugandan' },
     'Ukraine': { 'Ukrainian' },
-    'United Arab Emirates': {  },
+    'United Arab Emirates': set(),
     'United Kingdom': { 'British', 'UK' },
-    'Uruguay': {  },
+    'Uruguay': set(),
     'United States': { 'US', 'America', 'American' },
-    'Uzbekistan': {  },
+    'Uzbekistan': set(),
 
-    'Vanuatu': {  },
+    'Vanuatu': set(),
     'Venezuela': { 'Venezuelan' },
     'Vietnam': { 'Vietnamese' },
 
-    'Yemen': {  },
+    'Yemen': set(),
 
     'Zambia': { 'Zambian' },
-    'Zimbabwe': {  },
+    'Zimbabwe': set(),
 }
 
 for label, terms in countries.items():
-    countries[label].add(label)
-    countries[label] = set(map(lambda x: x.lower(), countries[label]))
+    terms.add(label)
 
 ## Return the countries where at least one of the synonyms (or the label itself)
 ## is found in the bag. The bag can contain single- or multi-word strings.

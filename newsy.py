@@ -1,8 +1,17 @@
 import os, sys, json, datetime, hashlib, multiprocessing, math
 import newspaper, rethinkdb
+import shared.config
 
-NEWS_DIRECTORY = sys.argv[1] + '/'
-DOWNLOAD_URL_ROOT = 'http://localhost:3000/'
+config = shared.config.load('newsy.ini')
+
+NEWS_DIRECTORY = config['Disk']['NewsPath']
+DOWNLOAD_URL_ROOT = config['Disk']['LocalNewsHost']
+
+DB_HOST = config['Database']['Host']
+DB_PORT = int(config['Database']['Port'])
+DB_DB = config['Database']['Db']
+DB_TABLE_NEWS = config['Database']['NewsTable']
+
 NUM_PROCESSES=4
 
 ## Connect to RethinkDB, where article metadata will be stored
@@ -40,10 +49,10 @@ def writeContent(filename, content):
         fp.write(content)
 
 def writeRecord(db, metadata):
-    return rethinkdb.db('news').table('metadata').insert(metadata.__dict__, conflict="update").run(db)
+    return rethinkdb.db(DB_DB).table(DB_TABLE_NEWS).insert(metadata.__dict__, conflict="update").run(db)
 
 def handle_article(article_list):
-    md = rethinkdb.connect('historian', 28015)
+    md = rethinkdb.connect(DB_HOST, DB_PORT)
 
     for article in article_list:
         filename = '{}.html'.format(article['_id'])
@@ -55,7 +64,6 @@ def handle_article(article_list):
         except Exception as e:
             print('Difficulty parsing article {}'.format(article['_id']))
         
-
 ## Load target files from news.json 
 articles = []
 

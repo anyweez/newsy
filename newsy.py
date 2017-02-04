@@ -33,7 +33,7 @@ class ArticleMetadata(object):
 
 ## Read, parse, and extract information from the specified HTML file.
 def extract(filename, source):
-    article = newspaper.Article(DOWNLOAD_URL_ROOT + filename)
+    article = newspaper.Article('{}/{}'.format(DOWNLOAD_URL_ROOT + filename))
 
     try:
         article.download()

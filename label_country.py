@@ -1,7 +1,7 @@
 import rethinkdb, sys, nltk, os
 import static.countries as static
 import shared.config
-# import shared.labels as labels
+import shared.labels as labels
 
 config = shared.config.load('newsy.ini')
 
@@ -32,11 +32,6 @@ def update_record():
 
     return add
 
-def add_labels(record, label, values):
-    if 'labels' not in record:
-        record['labels'] = {}
-    record['labels'][label] = values
-
 gen = next_record()
 update = update_record()
 
@@ -48,7 +43,7 @@ for doc, text in next_record():
     countries = static.find_countries(tokens)
 
     if len(countries) > 0:
-        add_labels(doc, 'countries', countries)
+        labels.add(doc, 'countries', countries)
         update(doc)
 
         found += 1

@@ -15,7 +15,10 @@ DB_TABLE_NEWS = config['Database']['NewsTable']
 NUM_PROCESSES=4
 
 ## Connect to RethinkDB, where article metadata will be stored
-
+"""
+Container class for all infomration stored in the news table for a given
+article.
+"""
 class ArticleMetadata(object):
     def __init__(self, article, source):
         h = hashlib.sha256()
@@ -33,7 +36,7 @@ class ArticleMetadata(object):
 
 ## Read, parse, and extract information from the specified HTML file.
 def extract(filename, source):
-    article = newspaper.Article(DOWNLOAD_URL_ROOT + filename)
+    article = newspaper.Article('{}/{}'.format(DOWNLOAD_URL_ROOT, filename))
 
     try:
         article.download()
@@ -51,6 +54,10 @@ def writeContent(filename, content):
 def writeRecord(db, metadata):
     return rethinkdb.db(DB_DB).table(DB_TABLE_NEWS).insert(metadata.__dict__, conflict="update").run(db)
 
+"""
+Subprocess that processes each article in serial. This process is designed to be 
+parallelizable and is kicked off NUM_PROCESSES times below.
+"""
 def handle_article(article_list):
     md = rethinkdb.connect(DB_HOST, DB_PORT)
 
@@ -59,8 +66,18 @@ def handle_article(article_list):
 
         try:
             metadata, content = extract(filename, article)
-            writeContent(NEWS_DIRECTORY + filename, content)
-            writeRecord(md, metadata)
+            # First choice: publication timestamp from story. 
+            # Fallback: value from API
+            if metadata.published is None:
+                metadata.published = article['publishedAt']
+    
+            # Ensure that the body isn't empty before saving this record. 
+            # It's possible that we might get HTML but not be able to extract 
+            # any text. In this case, we're currently electing to throw the 
+            # article out since there's not going to be much we can learn from it.
+            if len(content) > 0:
+                writeContent(NEWS_DIRECTORY + filename, content)
+                writeRecord(md, metadata)
         except Exception as e:
             print('Difficulty parsing article {}'.format(article['_id']))
         

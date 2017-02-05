@@ -15,7 +15,10 @@ DB_TABLE_NEWS = config['Database']['NewsTable']
 NUM_PROCESSES=4
 
 ## Connect to RethinkDB, where article metadata will be stored
-
+"""
+Container class for all infomration stored in the news table for a given
+article.
+"""
 class ArticleMetadata(object):
     def __init__(self, article, source):
         h = hashlib.sha256()
@@ -51,6 +54,10 @@ def writeContent(filename, content):
 def writeRecord(db, metadata):
     return rethinkdb.db(DB_DB).table(DB_TABLE_NEWS).insert(metadata.__dict__, conflict="update").run(db)
 
+"""
+Subprocess that processes each article in serial. This process is designed to be 
+parallelizable and is kicked off NUM_PROCESSES times below.
+"""
 def handle_article(article_list):
     md = rethinkdb.connect(DB_HOST, DB_PORT)
 
@@ -59,8 +66,17 @@ def handle_article(article_list):
 
         try:
             metadata, content = extract(filename, article)
-            writeContent(NEWS_DIRECTORY + filename, content)
-            writeRecord(md, metadata)
+            # First choice: publication timestamp from story. 
+            # Fallback: value from API
+            if metadata.published is None:
+                metadata.published = article.publishedAt 
+    
+            # Ensure that the body isn't empty before saving this record. 
+            # The scraper also performs this check, but I'm being redundant
+            # just in case content ever comes from other sources.
+            if len(content) > 0:
+                writeContent(NEWS_DIRECTORY + filename, content)
+                writeRecord(md, metadata)
         except Exception as e:
             print('Difficulty parsing article {}'.format(article['_id']))
         

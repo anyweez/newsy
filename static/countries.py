@@ -216,7 +216,7 @@ countries = {
     'United Arab Emirates': set(),
     'United Kingdom': { 'British', 'UK' },
     'Uruguay': set(),
-    'United States': { 'US', 'America', 'American' },
+    'United States': { 'US', 'U.S.', 'America', 'American' },
     'Uzbekistan': set(),
 
     'Vanuatu': set(),
@@ -236,7 +236,6 @@ for label, terms in countries.items():
 ## is found in the bag. The bag can contain single- or multi-word strings.
 def find_countries(bag):
     result = []
-    bag = list(map(lambda x: x.lower(), bag))
 
     for label, terms in countries.items():
         if len([term for term in bag if term in terms]) > 0:

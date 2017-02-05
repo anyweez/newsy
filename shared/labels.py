@@ -10,4 +10,4 @@ This function will overwrite any existing labels with the same name.
 def add(record, name, values):
     if 'labels' not in record:
         record['labels'] = {}
-    record['labels'][label] = values
+    record['labels'][name] = values

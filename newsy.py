@@ -69,11 +69,12 @@ def handle_article(article_list):
             # First choice: publication timestamp from story. 
             # Fallback: value from API
             if metadata.published is None:
-                metadata.published = article.publishedAt 
+                metadata.published = article['publishedAt']
     
             # Ensure that the body isn't empty before saving this record. 
-            # The scraper also performs this check, but I'm being redundant
-            # just in case content ever comes from other sources.
+            # It's possible that we might get HTML but not be able to extract 
+            # any text. In this case, we're currently electing to throw the 
+            # article out since there's not going to be much we can learn from it.
             if len(content) > 0:
                 writeContent(NEWS_DIRECTORY + filename, content)
                 writeRecord(md, metadata)

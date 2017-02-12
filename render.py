@@ -125,4 +125,6 @@ for name, stories in selected.items():
     chosen = map(lambda x: x.pop('labels', None), chosen)
 
     with open('{}/{}.json'.format(OUTPUT_BY_COUNTRY, code), 'w') as fp:
-        fp.write(json.dumps(chosen))
+        fp.write({
+            'articles': json.dumps(chosen)
+        })

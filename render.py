@@ -34,7 +34,8 @@ groups = {
 }
 
 metrics = {
-    'count_diff': utils.metrics.count_diff
+    'count_diff': utils.metrics.count_diff,
+    'rel_articles_per_day': utils.metrics.rel_articles_per_day
 }
 
 geo = {}

@@ -10,6 +10,10 @@ Annotates a GeoJSON file with a metric. The specific metric can be specified by:
 For example, comparing 60_to_120_days_ago (base group) to now (compare group) using
 the metric count_diff. All grouping / filtering functions are stored in utils.groups
 and all metric computation functions are stored in utils.metrics.
+
+This script also generates a set of output articles that should be displayed to 
+contextualize the metric. Currently these are the 10 most recent articles from the 
+compare group for each country.
 """
 
 config = shared.config.load('newsy.ini')
@@ -20,10 +24,12 @@ DB_PORT = int(config['Database']['Port'])
 DB_DB = config['Database']['Db']
 DB_TABLE_NEWS = config['Database']['NewsTable']
 
+OUTPUT_BY_COUNTRY = config['Disk']['ArticlesByCountry']
+
 # TODO: read these from cmd line params
-BASE_GROUP = '20_to_30_days_ago'
+BASE_GROUP = '25_to_35_days_ago'
 COMPARE_GROUP = 'now_to_10_days_ago'
-METRIC_NAME = 'count_diff'
+METRIC_NAME = 'rel_articles_per_day'
 
 FILTER_BASE_GROUP = None        # Derived from groups[BASE_GROUP]
 FILTER_COMPARE_GROUP = None     # Derived from groups[COMPARE_GROUP]
@@ -68,6 +74,7 @@ with open(config['BaseData']['CountriesGeo']) as fp:
 ## file.
 with open(config['BaseData']['CountriesMapping']) as fp:
     mapping = json.loads(fp.read())
+    reverse_mapping = { name: code for code, name in mapping.items() }
 
 ## Read in all records and filter to make base and compare
 group_base = []
@@ -94,9 +101,28 @@ for i, feature in enumerate(geo['features']):
         country = mapping[feature['id']]
 
         geo['features'][i]['properties']['diff'] = result[country] if country in result else None
+        geo['features'][i]['properties']['id'] = feature['id']
     except KeyError:
         pass
 
 # TODO: read filename from command line params
 with open('annotated.json', mode='w') as fp:
     fp.write(json.dumps(geo))
+
+# Select a subset of articles from group_compare to render for each country. Currently
+# choosing 10 most recent articles.
+selected = { name : [] for name in reverse_mapping.keys() }
+for article in group_compare:
+    if 'labels' in article:
+        for country in article['labels']['countries']:
+            selected[country].append(article)
+
+for name, stories in selected.items():
+    chosen = sorted(stories, key=lambda x: x['published'], reverse=True)[:10]
+    code = reverse_mapping[name]
+
+    # Get rid of all labels since these files are considered public.
+    chosen = map(lambda x: x.pop('labels', None), chosen)
+
+    with open('{}/{}.json'.format(OUTPUT_BY_COUNTRY, code), 'w') as fp:
+        fp.write(json.dumps(chosen))

@@ -44,7 +44,7 @@ for doc, text in next_record():
 
     if len(countries) > 0:
         labels.add(doc, 'countries', countries)
-        update(doc)
+        update(doc) # db insert
 
         found += 1
 

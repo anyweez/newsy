@@ -1,4 +1,4 @@
-import os, sys, json, datetime, hashlib, multiprocessing, math
+import os, sys, json, datetime, hashlib, multiprocessing, math, time
 import newspaper, rethinkdb
 import shared.config
 
@@ -13,6 +13,7 @@ DB_DB = config['Database']['Db']
 DB_TABLE_NEWS = config['Database']['NewsTable']
 
 NUM_PROCESSES=4
+SLEEP_TIME=60 # seconds
 
 ## Connect to RethinkDB, where article metadata will be stored
 """
@@ -56,12 +57,14 @@ def writeRecord(db, metadata):
 
 """
 Subprocess that processes each article in serial. This process is designed to be 
-parallelizable and is kicked off NUM_PROCESSES times below.
+parallelizable and is kicked off NUM_PROCESSES times below. It receives a shared queue
+as an input that serves as a task queue.
 """
-def handle_article(article_list):
+def handle_article(q, pid):
     md = rethinkdb.connect(DB_HOST, DB_PORT)
 
-    for article in article_list:
+    while True:
+        article = q.get()
         filename = '{}.html'.format(article['_id'])
 
         try:
@@ -82,26 +85,28 @@ def handle_article(article_list):
             print('Difficulty parsing article {}'.format(article['_id']))
         
 ## Load target files from news.json 
-articles = []
-
-print('Reading news stories...')
-with open(NEWS_DIRECTORY[:-1] + '.json') as fp:
-   articles = json.loads(fp.read())['records']
-
-## Iterate over each, one at a time, and parse. Create metadata records for
-## each story.
-segment_length = math.ceil(len(articles) / NUM_PROCESSES)
-jobs = []
+articles = multiprocessing.Queue()
+added = set()
 
 print('Launching child processes...')
 for i in range(0, NUM_PROCESSES):
-    start = segment_length * i
-    end = segment_length * (i + 1)
-
-    p = multiprocessing.Process(target=handle_article, args=(articles[start:end],))
-    jobs.append(p)
+    p = multiprocessing.Process(target=handle_article, args=(articles, i))
     p.start()
 
 print('Processing news stories...')
-for job in jobs:
-    job.join()
+while True:
+    print('Reading news stories...')
+    count = 0
+
+    with open(NEWS_DIRECTORY[:-1] + '.json') as fp:
+        raw = json.loads(fp.read())['records']
+
+        for article in raw:
+            if article['_id'] not in added:
+                added.add(article['_id'])
+                articles.put(article)
+
+                count += 1
+
+    print('Added {} stories.'.format(count))
+    time.sleep(SLEEP_TIME)

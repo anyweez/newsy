@@ -1,4 +1,4 @@
-import json, argparse, random, rethinkdb, re, pprint
+import json, argparse, random, rethinkdb, re, pprint, arrow
 import shared.config, utils.metrics, utils.groups
 
 """
@@ -70,8 +70,7 @@ for pattern, func in groups.items():
 with open(config['BaseData']['CountriesGeo']) as fp:
     geo = json.loads(fp.read())
 
-## Load a mapping between country names and ID's in the GeoJSON 
-## file.
+## Load a mapping between country names and ID's in the GeoJSON file.
 with open(config['BaseData']['CountriesMapping']) as fp:
     mapping = json.loads(fp.read())
     reverse_mapping = { name: code for code, name in mapping.items() }
@@ -109,22 +108,32 @@ for i, feature in enumerate(geo['features']):
 with open('annotated.json', mode='w') as fp:
     fp.write(json.dumps(geo))
 
-# Select a subset of articles from group_compare to render for each country. Currently
-# choosing 10 most recent articles.
-selected = { name : [] for name in reverse_mapping.keys() }
-for article in group_compare:
-    if 'labels' in article:
-        for country in article['labels']['countries']:
-            selected[country].append(article)
+recent = filter(lambda x: (arrow.now() - arrow.get(x['published'])).days < 2, group_compare)
+recent = filter(lambda x: 'labels' in x, recent)
 
-for name, stories in selected.items():
-    chosen = sorted(stories, key=lambda x: x['published'], reverse=True)[:10]
-    code = reverse_mapping[name]
+"""
+Convert stored article objects to a public format containing just the essential info.
+"""
+def publish(article):
+    # Currently choosing top country from list. Need to get smarter about this.
+    country_name = article['labels']['countries'][0]
 
-    # Get rid of all labels since these files are considered public.
-    chosen = map(lambda x: x.pop('labels', None), chosen)
+    return {
+        'title': article['title'],
+        'url': article['url'],
+        'published': article['published'],
+        'country': {
+            'name': country_name,
+            'performance': result[country_name],
+        },
+        'source': {
+            'name': article['source']
+        }
+    }
 
-    with open('{}/{}.json'.format(OUTPUT_BY_COUNTRY, code), 'w') as fp:
-        fp.write({
-            'articles': json.dumps(chosen)
-        })
+recent = map(publish, recent)
+recent = sorted(recent, key=lambda x: x['published'], reverse=True)
+
+with open('{}/articles.json'.format(OUTPUT_BY_COUNTRY), 'w') as fp:
+    fp.write(json.dumps(recent))
+    print('Wrote articles.json')

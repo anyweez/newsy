@@ -67,7 +67,6 @@ def rel_articles_per_day(base, compare):
         compare_days = set()
 
         for article in base:
-            print(arrow.get(article['published']).format('YYYY-MM-DD'))
             when = arrow.get(article['published']).format('YYYY-MM-DD')
             base_days.add(when)
 

@@ -231,14 +231,3 @@ countries = {
 
 for label, terms in countries.items():
     terms.add(label)
-
-## Return the countries where at least one of the synonyms (or the label itself)
-## is found in the bag. The bag can contain single- or multi-word strings.
-def find_countries(bag):
-    result = []
-
-    for label, terms in countries.items():
-        if len([term for term in bag if term in terms]) > 0:
-            result.append(label)
-
-    return result

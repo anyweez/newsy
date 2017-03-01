@@ -11,3 +11,9 @@ def add(record, name, values):
     if 'labels' not in record:
         record['labels'] = {}
     record['labels'][name] = values
+
+def get(record, name):
+    return record['labels'][name]
+
+def has_labels(record):
+    return 'labels' in record

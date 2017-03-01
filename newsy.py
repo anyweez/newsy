@@ -12,8 +12,8 @@ DB_PORT = int(config['Database']['Port'])
 DB_DB = config['Database']['Db']
 DB_TABLE_NEWS = config['Database']['NewsTable']
 
-NUM_PROCESSES=4
-SLEEP_TIME=60 # seconds
+NUM_PROCESSES = 4
+SLEEP_TIME = 60     # seconds
 
 ## Connect to RethinkDB, where article metadata will be stored
 """
